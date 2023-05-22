@@ -1,0 +1,27 @@
+workflows:
+  simulator-flutter-ios:
+    name: iOS simulator build
+    max_build_duration: 120
+    environment:
+      flutter: stable
+      vars:
+        XCODE_WORKSPACE: "Runner.xcworkspace"
+        XCODE_SCHEME: "Runner"
+    scripts:
+    - name: Get Flutter packages
+      script: | 
+        flutter packages pub get
+    - name: Install pods
+      script: | 
+        find . -name "Podfile" -execdir pod install \;
+    - name: Build the .app
+      script: | 
+        # build using workspace
+        cd ios
+        xcodebuild build \
+          -workspace "$XCODE_WORKSPACE" \
+          -scheme "$XCODE_SCHEME" \
+          -sdk iphonesimulator \
+          CODE_SIGN_INDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO  
